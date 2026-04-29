@@ -7,50 +7,43 @@ public class QuantityMeasurementAppTest {
 
     @Test
     public void testFeetEquality() {
-        Length f1 = new Length(1.0, Length.LengthUnit.FEET);
-        Length f2 = new Length(1.0, Length.LengthUnit.FEET);
-        assertTrue(f1.equals(f2));
+        assertTrue(new Length(1.0, Length.LengthUnit.FEET)
+                .equals(new Length(1.0, Length.LengthUnit.FEET)));
     }
 
     @Test
     public void testFeetInequality() {
-        Length f1 = new Length(1.0, Length.LengthUnit.FEET);
-        Length f2 = new Length(2.0, Length.LengthUnit.FEET);
-        assertFalse(f1.equals(f2));
+        assertFalse(new Length(1.0, Length.LengthUnit.FEET)
+                .equals(new Length(2.0, Length.LengthUnit.FEET)));
     }
 
     @Test
     public void testInchesEquality() {
-        Length i1 = new Length(1.0, Length.LengthUnit.INCHES);
-        Length i2 = new Length(1.0, Length.LengthUnit.INCHES);
-        assertTrue(i1.equals(i2));
+        assertTrue(new Length(1.0, Length.LengthUnit.INCHES)
+                .equals(new Length(1.0, Length.LengthUnit.INCHES)));
     }
 
     @Test
     public void testInchesInequality() {
-        Length i1 = new Length(1.0, Length.LengthUnit.INCHES);
-        Length i2 = new Length(2.0, Length.LengthUnit.INCHES);
-        assertFalse(i1.equals(i2));
+        assertFalse(new Length(1.0, Length.LengthUnit.INCHES)
+                .equals(new Length(2.0, Length.LengthUnit.INCHES)));
     }
 
     @Test
     public void testFeetInchesComparison() {
-        Length oneFoot  = new Length(1.0,  Length.LengthUnit.FEET);
-        Length twelveIn = new Length(12.0, Length.LengthUnit.INCHES);
-        assertTrue(oneFoot.equals(twelveIn), "1 foot should equal 12 inches");
+        assertTrue(new Length(1.0, Length.LengthUnit.FEET)
+                .equals(new Length(12.0, Length.LengthUnit.INCHES)));
     }
 
     @Test
     public void testCrossUnitInequality() {
-        Length oneFoot = new Length(1.0, Length.LengthUnit.FEET);
-        Length oneInch = new Length(1.0, Length.LengthUnit.INCHES);
-        assertFalse(oneFoot.equals(oneInch), "1 foot should not equal 1 inch");
+        assertFalse(new Length(1.0, Length.LengthUnit.FEET)
+                .equals(new Length(1.0, Length.LengthUnit.INCHES)));
     }
 
     @Test
     public void testNullComparison() {
-        Length l = new Length(1.0, Length.LengthUnit.FEET);
-        assertFalse(l.equals(null));
+        assertFalse(new Length(1.0, Length.LengthUnit.FEET).equals(null));
     }
 
     @Test
@@ -61,8 +54,118 @@ public class QuantityMeasurementAppTest {
 
     @Test
     public void testMultipleFeetComparison() {
-        Length f1 = new Length(2.0, Length.LengthUnit.FEET);  // = 24 inches
-        Length f2 = new Length(24.0, Length.LengthUnit.INCHES);
-        assertTrue(f1.equals(f2), "2 feet should equal 24 inches");
+        assertTrue(new Length(2.0, Length.LengthUnit.FEET)
+                .equals(new Length(24.0, Length.LengthUnit.INCHES)));
+    }
+
+
+    @Test
+    public void testEquality_YardToYard_SameValue() {
+        assertTrue(new Length(1.0, Length.LengthUnit.YARDS)
+                .equals(new Length(1.0, Length.LengthUnit.YARDS)));
+    }
+
+    @Test
+    public void testEquality_YardToYard_DifferentValue() {
+        assertFalse(new Length(1.0, Length.LengthUnit.YARDS)
+                .equals(new Length(2.0, Length.LengthUnit.YARDS)));
+    }
+
+    @Test
+    public void testEquality_YardToFeet_EquivalentValue() {
+        assertTrue(new Length(1.0, Length.LengthUnit.YARDS)
+                .equals(new Length(3.0, Length.LengthUnit.FEET)));
+    }
+
+    @Test
+    public void testEquality_FeetToYard_EquivalentValue() {
+        assertTrue(new Length(3.0, Length.LengthUnit.FEET)
+                .equals(new Length(1.0, Length.LengthUnit.YARDS)));
+    }
+
+    @Test
+    public void testEquality_YardToInches_EquivalentValue() {
+        assertTrue(new Length(1.0, Length.LengthUnit.YARDS)
+                .equals(new Length(36.0, Length.LengthUnit.INCHES)));
+    }
+
+    @Test
+    public void testEquality_InchesToYard_EquivalentValue() {
+        assertTrue(new Length(36.0, Length.LengthUnit.INCHES)
+                .equals(new Length(1.0, Length.LengthUnit.YARDS)));
+    }
+
+    @Test
+    public void testEquality_YardToFeet_NonEquivalentValue() {
+        assertFalse(new Length(1.0, Length.LengthUnit.YARDS)
+                .equals(new Length(2.0, Length.LengthUnit.FEET)));
+    }
+
+    @Test
+    public void testEquality_YardSameReference() {
+        Length yard = new Length(1.0, Length.LengthUnit.YARDS);
+        assertTrue(yard.equals(yard));
+    }
+
+    @Test
+    public void testEquality_YardNullComparison() {
+        assertFalse(new Length(1.0, Length.LengthUnit.YARDS).equals(null));
+    }
+
+
+    @Test
+    public void testEquality_centimetersToInches_EquivalentValue() {
+        assertTrue(new Length(1.0, Length.LengthUnit.CENTIMETERS)
+                .equals(new Length(0.393701, Length.LengthUnit.INCHES)));
+    }
+
+    @Test
+    public void testEquality_centimetersToFeet_NonEquivalentValue() {
+        assertFalse(new Length(1.0, Length.LengthUnit.CENTIMETERS)
+                .equals(new Length(1.0, Length.LengthUnit.FEET)));
+    }
+
+    @Test
+    public void testEquality_CentimetersSameValue() {
+        assertTrue(new Length(2.0, Length.LengthUnit.CENTIMETERS)
+                .equals(new Length(2.0, Length.LengthUnit.CENTIMETERS)));
+    }
+
+    @Test
+    public void testEquality_CentimetersDifferentValue() {
+        assertFalse(new Length(1.0, Length.LengthUnit.CENTIMETERS)
+                .equals(new Length(2.0, Length.LengthUnit.CENTIMETERS)));
+    }
+
+    @Test
+    public void testEquality_CentimetersSameReference() {
+        Length cm = new Length(1.0, Length.LengthUnit.CENTIMETERS);
+        assertTrue(cm.equals(cm));
+    }
+
+    @Test
+    public void testEquality_CentimetersNullComparison() {
+        assertFalse(new Length(1.0, Length.LengthUnit.CENTIMETERS).equals(null));
+    }
+
+
+    @Test
+    public void testEquality_MultiUnit_TransitiveProperty() {
+        Length oneYard    = new Length(1.0,  Length.LengthUnit.YARDS);
+        Length threeFeet  = new Length(3.0,  Length.LengthUnit.FEET);
+        Length thirtySix  = new Length(36.0, Length.LengthUnit.INCHES);
+        assertTrue(oneYard.equals(threeFeet));
+        assertTrue(threeFeet.equals(thirtySix));
+        assertTrue(oneYard.equals(thirtySix));
+    }
+
+    @Test
+    public void testEquality_AllUnits_ComplexScenario() {
+        Length twoYards    = new Length(2.0,  Length.LengthUnit.YARDS);
+        Length sixFeet     = new Length(6.0,  Length.LengthUnit.FEET);
+        Length seventyTwo  = new Length(72.0, Length.LengthUnit.INCHES);
+        assertTrue(twoYards.equals(sixFeet));
+        assertTrue(sixFeet.equals(seventyTwo));
+        assertTrue(twoYards.equals(seventyTwo));
     }
 }
