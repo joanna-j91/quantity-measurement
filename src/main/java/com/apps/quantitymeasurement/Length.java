@@ -2,14 +2,16 @@ package com.apps.quantitymeasurement;
 
 public class Length {
 
-    private double value;
-    private LengthUnit unit;
+    private final double value;
+    private final LengthUnit unit;
+
+    private static final double EPSILON = 1e-6;
 
     public enum LengthUnit {
-        FEET(12.0),
-        INCHES(1.0),
-        YARDS(36.0),
-        CENTIMETERS(0.393701);
+        FEET(12.0),            // 1 foot = 12 inches
+        INCHES(1.0),           // base unit
+        YARDS(36.0),           // 1 yard = 36 inches
+        CENTIMETERS(0.393701); // 1 cm = 0.393701 inches
 
         private final double conversionFactor;
 
@@ -23,16 +25,42 @@ public class Length {
     }
 
     public Length(double value, LengthUnit unit) {
+        if (unit == null) {
+            throw new IllegalArgumentException("Unit cannot be null");
+        }
+        if (!Double.isFinite(value)) {
+            throw new IllegalArgumentException("Value must be a finite number, got: " + value);
+        }
         this.value = value;
         this.unit = unit;
     }
+
+    public Length convertTo(LengthUnit targetUnit) {
+        if (targetUnit == null) {
+            throw new IllegalArgumentException("Target unit cannot be null");
+        }
+        double convertedValue = this.value *
+                (this.unit.getConversionFactor() / targetUnit.getConversionFactor());
+        return new Length(convertedValue, targetUnit);
+    }
+
+    public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
+        if (sourceUnit == null || targetUnit == null) {
+            throw new IllegalArgumentException("Source and target units cannot be null");
+        }
+        if (!Double.isFinite(value)) {
+            throw new IllegalArgumentException("Value must be finite, got: " + value);
+        }
+        return value * (sourceUnit.getConversionFactor() / targetUnit.getConversionFactor());
+    }
+
 
     private double convertToBaseUnit() {
         return value * unit.getConversionFactor();
     }
 
-    public boolean compare(Length thatLength) {
-        return Double.compare(this.convertToBaseUnit(), thatLength.convertToBaseUnit()) == 0;
+    public boolean compare(Length other) {
+        return Math.abs(this.convertToBaseUnit() - other.convertToBaseUnit()) < EPSILON;
     }
 
     @Override
@@ -43,9 +71,16 @@ public class Length {
         return this.compare(other);
     }
 
+    @Override
+    public String toString() {
+        return String.format("Length(%.6f %s)", value, unit.name());
+    }
+
     public static void main(String[] args) {
-        Length length1 = new Length(1.0, LengthUnit.FEET);
-        Length length2 = new Length(20.0, LengthUnit.INCHES);
-        System.out.println("Are lengths equal? " + length1.equals(length2)); // false; 1ft=12in ≠ 20in
+        System.out.println(Length.convert(1.0,  LengthUnit.FEET,        LengthUnit.INCHES));  // 12.0
+        System.out.println(Length.convert(3.0,  LengthUnit.YARDS,       LengthUnit.FEET));    // 9.0
+        System.out.println(Length.convert(36.0, LengthUnit.INCHES,      LengthUnit.YARDS));   // 1.0
+        System.out.println(Length.convert(1.0,  LengthUnit.CENTIMETERS, LengthUnit.INCHES));  // ~0.393701
+        System.out.println(Length.convert(0.0,  LengthUnit.FEET,        LengthUnit.INCHES));  // 0.0
     }
 }

@@ -1,5 +1,6 @@
 package com.apps.quantitymeasurement;
 
+
 public class QuantityMeasurementApp {
 
     public static boolean demonstrateLengthEquality(Length length1, Length length2) {
@@ -8,43 +9,46 @@ public class QuantityMeasurementApp {
         return result;
     }
 
-    public static void demonstrateFeetEquality() {
-        Length feet1 = new Length(1.0, Length.LengthUnit.FEET);
-        Length feet2 = new Length(1.0, Length.LengthUnit.FEET);
-        demonstrateLengthEquality(feet1, feet2);
+
+    public static double demonstrateLengthConversion(double value,
+                                                     Length.LengthUnit fromUnit,
+                                                     Length.LengthUnit toUnit) {
+        double result = Length.convert(value, fromUnit, toUnit);
+        System.out.printf("convert(%.4f %s → %s) = %.6f%n",
+                value, fromUnit.name(), toUnit.name(), result);
+        return result;
     }
 
-    public static void demonstrateInchesEquality() {
-        Length inches1 = new Length(1.0, Length.LengthUnit.INCHES);
-        Length inches2 = new Length(1.0, Length.LengthUnit.INCHES);
-        demonstrateLengthEquality(inches1, inches2);
+
+    public static Length demonstrateLengthConversion(Length length,
+                                                     Length.LengthUnit targetUnit) {
+        Length result = length.convertTo(targetUnit);
+        System.out.println(length + " converted to " + targetUnit.name() + " = " + result);
+        return result;
     }
 
-    public static void demonstrateFeetInchesComparison() {
-        Length oneFoot  = new Length(1.0,  Length.LengthUnit.FEET);
-        Length twelveIn = new Length(12.0, Length.LengthUnit.INCHES);
-        demonstrateLengthEquality(oneFoot, twelveIn);
-    }
 
-    public static void demonstrateYardsEquality() {
-        Length oneYard  = new Length(1.0, Length.LengthUnit.YARDS);
-        Length threeFt  = new Length(3.0, Length.LengthUnit.FEET);
-        Length thirtySixIn = new Length(36.0, Length.LengthUnit.INCHES);
-        demonstrateLengthEquality(oneYard, threeFt);
-        demonstrateLengthEquality(oneYard, thirtySixIn);
-    }
-
-    public static void demonstrateCentimetersEquality() {
-        Length oneCm   = new Length(1.0,      Length.LengthUnit.CENTIMETERS);
-        Length inchEq  = new Length(0.393701, Length.LengthUnit.INCHES);
-        demonstrateLengthEquality(oneCm, inchEq);
+    public static void demonstrateLengthComparison(double value1, Length.LengthUnit unit1,
+                                                   double value2, Length.LengthUnit unit2) {
+        Length l1 = new Length(value1, unit1);
+        Length l2 = new Length(value2, unit2);
+        demonstrateLengthEquality(l1, l2);
     }
 
     public static void main(String[] args) {
-        demonstrateFeetEquality();
-        demonstrateInchesEquality();
-        demonstrateFeetInchesComparison();
-        demonstrateYardsEquality();
-        demonstrateCentimetersEquality();
+        System.out.println("=== Conversion Demo (raw values) ===");
+        demonstrateLengthConversion(1.0,  Length.LengthUnit.FEET,        Length.LengthUnit.INCHES);
+        demonstrateLengthConversion(3.0,  Length.LengthUnit.YARDS,       Length.LengthUnit.FEET);
+        demonstrateLengthConversion(36.0, Length.LengthUnit.INCHES,      Length.LengthUnit.YARDS);
+        demonstrateLengthConversion(1.0,  Length.LengthUnit.CENTIMETERS, Length.LengthUnit.INCHES);
+        demonstrateLengthConversion(0.0,  Length.LengthUnit.FEET,        Length.LengthUnit.INCHES);
+
+        System.out.println("\n=== Conversion Demo (Length instance) ===");
+        Length lengthInYards = new Length(1.0, Length.LengthUnit.YARDS);
+        demonstrateLengthConversion(lengthInYards, Length.LengthUnit.INCHES);
+
+        System.out.println("\n=== Equality Demo ===");
+        demonstrateLengthComparison(1.0, Length.LengthUnit.FEET,  12.0, Length.LengthUnit.INCHES);
+        demonstrateLengthComparison(1.0, Length.LengthUnit.YARDS,  3.0, Length.LengthUnit.FEET);
     }
 }
