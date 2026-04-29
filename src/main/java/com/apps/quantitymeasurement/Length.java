@@ -77,6 +77,10 @@ public class Length {
         return addInTargetUnit(other, this.unit);
     }
 
+    public Length add(Length other, LengthUnit targetUnit) {
+        return addInTargetUnit(other, targetUnit);
+    }
+
     public static void main(String[] args) {
         Length feet1   = new Length(1.0,  LengthUnit.FEET);
         Length feet2   = new Length(2.0,  LengthUnit.FEET);

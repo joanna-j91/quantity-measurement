@@ -205,4 +205,100 @@ public class QuantityMeasurementAppTest {
         Length result = new Length(0.001, Length.LengthUnit.FEET).add(new Length(0.002, Length.LengthUnit.FEET));
         assertEquals(new Length(0.003, Length.LengthUnit.FEET), result);
     }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_Feet() {
+        Length result = new Length(1.0, Length.LengthUnit.FEET)
+                .add(new Length(12.0, Length.LengthUnit.INCHES), Length.LengthUnit.FEET);
+        assertEquals(new Length(2.0, Length.LengthUnit.FEET), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_Inches() {
+        Length result = new Length(1.0, Length.LengthUnit.FEET)
+                .add(new Length(12.0, Length.LengthUnit.INCHES), Length.LengthUnit.INCHES);
+        assertEquals(new Length(24.0, Length.LengthUnit.INCHES), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_Yards() {
+        Length result = new Length(1.0, Length.LengthUnit.FEET)
+                .add(new Length(12.0, Length.LengthUnit.INCHES), Length.LengthUnit.YARDS);
+        assertEquals(new Length(0.67, Length.LengthUnit.YARDS), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_Centimeters() {
+        Length result = new Length(1.0, Length.LengthUnit.INCHES)
+                .add(new Length(1.0, Length.LengthUnit.INCHES), Length.LengthUnit.CENTIMETERS);
+        assertEquals(new Length(5.08, Length.LengthUnit.CENTIMETERS), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_SameAsFirstOperand() {
+        Length result = new Length(2.0, Length.LengthUnit.YARDS)
+                .add(new Length(3.0, Length.LengthUnit.FEET), Length.LengthUnit.YARDS);
+        assertEquals(new Length(3.0, Length.LengthUnit.YARDS), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_SameAsSecondOperand() {
+        Length result = new Length(2.0, Length.LengthUnit.YARDS)
+                .add(new Length(3.0, Length.LengthUnit.FEET), Length.LengthUnit.FEET);
+        assertEquals(new Length(9.0, Length.LengthUnit.FEET), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_Commutativity() {
+        Length.LengthUnit target = Length.LengthUnit.YARDS;
+        Length ab = new Length(1.0, Length.LengthUnit.FEET)
+                .add(new Length(12.0, Length.LengthUnit.INCHES), target);
+        Length ba = new Length(12.0, Length.LengthUnit.INCHES)
+                .add(new Length(1.0, Length.LengthUnit.FEET), target);
+        assertTrue(ab.equals(ba));
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_WithZero() {
+        Length result = new Length(5.0, Length.LengthUnit.FEET)
+                .add(new Length(0.0, Length.LengthUnit.INCHES), Length.LengthUnit.YARDS);
+        assertEquals(new Length(1.67, Length.LengthUnit.YARDS), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_NegativeValues() {
+        Length result = new Length(5.0, Length.LengthUnit.FEET)
+                .add(new Length(-2.0, Length.LengthUnit.FEET), Length.LengthUnit.INCHES);
+        assertEquals(new Length(36.0, Length.LengthUnit.INCHES), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_NullTargetUnit_Throws() {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Length(1.0, Length.LengthUnit.FEET)
+                        .add(new Length(12.0, Length.LengthUnit.INCHES), null));
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_LargeToSmallScale() {
+        Length result = new Length(1000.0, Length.LengthUnit.FEET)
+                .add(new Length(500.0, Length.LengthUnit.FEET), Length.LengthUnit.INCHES);
+        assertEquals(new Length(18000.0, Length.LengthUnit.INCHES), result);
+    }
+
+    @Test
+    public void testAddition_ExplicitTargetUnit_SmallToLargeScale() {
+        Length result = new Length(12.0, Length.LengthUnit.INCHES)
+                .add(new Length(12.0, Length.LengthUnit.INCHES), Length.LengthUnit.YARDS);
+        assertEquals(new Length(0.67, Length.LengthUnit.YARDS), result);
+    }
+
+    @Test
+    public void testAddition_MathematicalConsistency_SameAddDifferentTargets() {
+        Length l1 = new Length(1.0,  Length.LengthUnit.FEET);
+        Length l2 = new Length(12.0, Length.LengthUnit.INCHES);
+        Length inFeet   = l1.add(l2, Length.LengthUnit.FEET);
+        Length inInches = l1.add(l2, Length.LengthUnit.INCHES);
+        assertTrue(inFeet.equals(inInches));
+    }
 }
